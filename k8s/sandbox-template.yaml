@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: USERNAME-sandbox
+  labels:
+    app: user-sandbox
+spec:
+  containers:
+    - name: sandbox
+      image: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/hello-sandbox:latest
+      ports:
+        - containerPort: 8001
+      volumeMounts:
+        - name: user-data
+          mountPath: /data
+  volumes:
+    - name: user-data
+      emptyDir: {}
+

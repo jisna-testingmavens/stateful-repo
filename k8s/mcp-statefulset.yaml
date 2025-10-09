@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mcp-server
+  namespace: sandbox-system
+spec:
+  serviceName: "mcp"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-server
+  template:
+    metadata:
+      labels:
+        app: mcp-server
+    spec:
+      containers:
+      - name: mcp
+        image: ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/mcp-server:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: mcp-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: mcp-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mcp-service
+  namespace: sandbox-system
+spec:
+  clusterIP: None
+  selector:
+    app: mcp-server
+  ports:
+    - port: 8080
+
